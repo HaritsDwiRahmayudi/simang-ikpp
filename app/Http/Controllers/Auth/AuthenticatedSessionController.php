@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
+
 class AuthenticatedSessionController extends Controller
 {
     /**
@@ -22,18 +23,32 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-   public function store(LoginRequest $request): RedirectResponse
+
+
+
+public function store(LoginRequest $request): RedirectResponse
 {
     $request->authenticate();
+
     $request->session()->regenerate();
 
-    // LOGIKA REDIRECT
-    if ($request->user()->role === 'admin') {
-        return redirect()->intended(route('admin.dashboard', absolute: false));
+    // === TAMBAHAN LOGIKA REDIRECT ===
+    
+    // 1. Cek Role User yang sedang login
+    $role = $request->user()->role; 
+
+    // 2. Jika Admin, arahkan ke route admin.dashboard
+    if ($role === 'admin') {
+        return redirect()->intended(route('admin.dashboard'));
     }
 
-    // Default ke dashboard mahasiswa
-    return redirect()->intended(route('dashboard', absolute: false));
+    // 3. Jika Mahasiswa, arahkan ke route dashboard (mahasiswa)
+    if ($role === 'mahasiswa') {
+        return redirect()->intended(route('dashboard'));
+    }
+
+    // 4. Default redirect jika tidak punya role khusus
+    return redirect()->intended('/dashboard');
 }
     /**
      * Destroy an authenticated session.

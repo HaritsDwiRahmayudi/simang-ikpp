@@ -23,6 +23,11 @@ Route::middleware('auth')->group(function () {
         // Aksi Terima/Tolak Magang
         Route::patch('/admin/magang/{id}/{status}', [App\Http\Controllers\AdminController::class, 'updateStatus'])->name('admin.status.update');
 
+        // Route Monitoring Baru
+    Route::get('/admin/monitoring', [App\Http\Controllers\AdminController::class, 'monitoring'])->name('admin.monitoring');
+    Route::get('/admin/monitoring/{id}', [App\Http\Controllers\AdminController::class, 'detailMahasiswa'])->name('admin.monitoring.detail');
+    Route::patch('/admin/laporan/{id}/approve', [App\Http\Controllers\AdminController::class, 'approveLaporan'])->name('admin.laporan.approve');
+
     });
 
   // 2. AREA MAHASISWA (Role Mahasiswa + Wajib Verified Email)
@@ -45,6 +50,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/absensi', [App\Http\Controllers\PresenceController::class, 'index'])->name('presence.index');
         Route::post('/absensi/masuk', [App\Http\Controllers\PresenceController::class, 'checkIn'])->name('presence.checkin');
         Route::patch('/absensi/keluar', [App\Http\Controllers\PresenceController::class, 'checkOut'])->name('presence.checkout');
+
+        // Route Download PDF
+    Route::get('/laporan/cetak', [App\Http\Controllers\LaporanController::class, 'downloadPdf'])->name('laporan.cetak');
     });
 
     // ==========================================
