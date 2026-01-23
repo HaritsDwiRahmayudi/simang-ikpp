@@ -9,24 +9,21 @@ class Magang extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     * (Kolom-kolom ini wajib didaftarkan agar bisa disimpan lewat Form)
-     */
+    protected $table = 'magangs'; // Pastikan nama tabel benar
+
+    // Tambahkan 'status_laporan' agar bisa di-update
     protected $fillable = [
-        'user_id',          // ID User yang login
-        'nim',              // Nomor Induk Mahasiswa
-        'universitas',      // Asal Kampus
-        'jurusan',          // Jurusan
-        'tanggal_mulai',    // Rencana mulai
-        'tanggal_selesai',  // Rencana selesai
-        'status',           // Status (pending/approved/rejected)
+        'user_id',
+        'nim',
+        'universitas',
+        'jurusan',
+        'tanggal_mulai',
+        'tanggal_selesai',
+        'status',           // Status pendaftaran (pending/approved/rejected)
+        'status_laporan',   // Status laporan akhir (diterima/ditolak)
+        'surat_balasan',    // Surat balasan dari instansi
     ];
 
-    /**
-     * Relasi ke Tabel User
-     * (Satu data pendaftaran magang, dimiliki oleh satu User)
-     */
     public function user()
     {
         return $this->belongsTo(User::class);

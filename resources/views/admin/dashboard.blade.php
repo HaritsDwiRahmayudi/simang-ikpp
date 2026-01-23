@@ -1,114 +1,87 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard Admin - Kelola Pendaftar') }}
+            {{ __('Dashboard Admin') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             
-            {{-- Alert Sukses --}}
+            {{-- Notifikasi Sukses --}}
             @if(session('success'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+                <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
                     {{ session('success') }}
                 </div>
             @endif
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    
-                    <h3 class="text-lg font-bold mb-4">Daftar Pengajuan Magang</h3>
+                    <h3 class="font-bold text-lg mb-4">Daftar Pendaftar Magang</h3>
 
-                    {{-- TABEL RESPONSIVE --}}
                     <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Mahasiswa</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kampus / Jurusan</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Magang</th>
-                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                        <table class="min-w-full table-auto border-collapse border border-gray-200">
+                            <thead>
+                                <tr class="bg-gray-100">
+                                    <th class="border px-4 py-2 text-left">Nama</th>
+                                    <th class="border px-4 py-2 text-left">Universitas</th>
+                                    <th class="border px-4 py-2 text-left">Jurusan</th>
+                                    <th class="border px-4 py-2 text-center">Status</th>
+                                    <th class="border px-4 py-2 text-center">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
+                            <tbody>
                                 @forelse($pendaftar as $item)
-                                <tr>
-                                    {{-- Kolom Nama --}}
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm font-bold text-gray-900">{{ $item->user->name }}</div>
-                                        <div class="text-sm text-gray-500">{{ $item->nim }}</div>
-                                        <div class="text-xs text-gray-400 mt-1">{{ $item->user->email }}</div>
-                                    </td>
-                                    
-                                    {{-- Kolom Kampus --}}
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">{{ $item->universitas }}</div>
-                                        <div class="text-sm text-gray-500">{{ $item->jurusan }}</div>
-                                    </td>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border px-4 py-2">{{ $item->user->name ?? '-' }}</td>
+                                        <td class="border px-4 py-2">{{ $item->universitas }}</td>
+                                        <td class="border px-4 py-2">{{ $item->jurusan }}</td>
+                                        <td class="border px-4 py-2 text-center">
+                                            @if($item->status == 'approved')
+                                                <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Diterima</span>
+                                            @elseif($item->status == 'rejected')
+                                                <span class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded">Ditolak</span>
+                                            @else
+                                                <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded">Pending</span>
+                                            @endif
+                                        </td>
+                                        <td class="border px-4 py-2 text-center">
+                                            <div class="flex justify-center gap-2">
+                                                
+                                                {{-- KONDISI 1: JIKA MASIH PENDING --}}
+                                                @if($item->status == 'pending')
+                                                    {{-- Tombol Lihat Detail (Wajib Cek PDF Dulu) --}}
+                                                    <a href="{{ route('admin.show', $item->id) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-sm inline-flex items-center">
+                                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                                        Lihat Detail
+                                                    </a>
+                                                
+                                                {{-- KONDISI 2: JIKA SUDAH DITERIMA --}}
+                                                @elseif($item->status == 'approved')
+                                                    {{-- Tombol Monitoring Logbook --}}
+                                                    <a href="{{ route('admin.monitoring.detail', $item->id) }}" class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-1 px-3 rounded text-sm inline-flex items-center">
+                                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                                                        Monitoring
+                                                    </a>
 
-                                    {{-- Kolom Tanggal --}}
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">Mulai: {{ $item->tanggal_mulai }}</div>
-                                        <div class="text-sm text-gray-500">Selesai: {{ $item->tanggal_selesai }}</div>
-                                    </td>
+                                                {{-- KONDISI 3: JIKA DITOLAK --}}
+                                                @else
+                                                    <span class="text-gray-400 text-xs italic">Tidak ada aksi</span>
+                                                @endif
 
-                                    {{-- Kolom Status --}}
-                                    <td class="px-6 py-4 whitespace-nowrap text-center">
-                                        @if($item->status == 'pending')
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                                Pending
-                                            </span>
-                                        @elseif($item->status == 'approved')
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                Diterima
-                                            </span>
-                                        @else
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                                Ditolak
-                                            </span>
-                                        @endif
-                                    </td>
-
-                                    {{-- Kolom Tombol Aksi --}}
-                                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                        @if($item->status == 'pending')
-                                            <div class="flex justify-center space-x-2">
-                                                {{-- Tombol TERIMA --}}
-                                                <form action="{{ route('admin.status.update', ['id' => $item->id, 'status' => 'approved']) }}" method="POST">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-xs shadow" onclick="return confirm('Yakin ingin menerima mahasiswa ini?')">
-                                                        ✅ Terima
-                                                    </button>
-                                                </form>
-
-                                                {{-- Tombol TOLAK --}}
-                                                <form action="{{ route('admin.status.update', ['id' => $item->id, 'status' => 'rejected']) }}" method="POST">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded text-xs shadow" onclick="return confirm('Yakin ingin menolak pengajuan ini?')">
-                                                        ❌ Tolak
-                                                    </button>
-                                                </form>
                                             </div>
-                                        @else
-                                            <span class="text-gray-400 text-xs italic">Selesai diproses</span>
-                                        @endif
-                                    </td>
-                                </tr>
+                                        </td>
+                                    </tr>
                                 @empty
-                                <tr>
-                                    <td colspan="5" class="px-6 py-4 text-center text-gray-500 italic">
-                                        Belum ada data pendaftaran magang yang masuk.
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td colspan="5" class="border px-4 py-8 text-center text-gray-500">
+                                            Belum ada data pendaftar magang.
+                                        </td>
+                                    </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
-                    {{-- End Tabel --}}
 
                 </div>
             </div>

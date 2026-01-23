@@ -15,10 +15,20 @@
     <nav class="bg-white shadow-sm fixed w-full z-50 top-0">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
-                <div class="flex-shrink-0 flex items-center gap-2">
-                    <svg class="h-8 w-8 text-blue-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                    </svg>
+                
+                {{-- BAGIAN LOGO --}}
+                <div class="flex-shrink-0 flex items-center">
+                    
+                    {{-- 1. LOGO IKPP (KIRI) --}}
+                    {{-- 'mr-6' = Jarak pemisah antara grup IKPP dengan grup Simang --}}
+                    <img src="{{ asset('images/logo ikpp.png') }}" alt="Logo IKPP" class="h-10 w-auto mr-6">
+
+                    {{-- 2. LOGO SIMANG (TENGAH) --}}
+                    {{-- '-mr-2' = Margin Negatif. Ini akan menarik teks masuk ke kiri mendekati logo --}}
+                    {{-- Gunakan ini jika file gambar memiliki area kosong di pinggirnya --}}
+                    <img src="{{ asset('images/logo simang.png') }}" alt="Logo Simang" class="h-10 w-auto -mr-2">
+                    
+                    {{-- 3. TEKS JUDUL (KANAN) --}}
                     <span class="font-bold text-xl tracking-tight text-blue-900">SIMANG IKPP</span>
                 </div>
 
@@ -48,7 +58,10 @@
     </nav>
 
     <div class="relative pt-16 pb-16 md:pt-32 md:pb-24 flex content-center items-center justify-center min-h-screen">
-        <div class="absolute top-0 w-full h-full bg-center bg-cover" style="background-image: url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
+        
+        {{-- BACKGROUND IMAGE --}}
+        <div class="absolute top-0 w-full h-full bg-center bg-cover" 
+             style="background-image: url('{{ asset('images/ikpp.jpg') }}');">
             <span id="blackOverlay" class="w-full h-full absolute opacity-75 bg-gradient-to-r from-blue-900 to-gray-900"></span>
         </div>
         
@@ -56,10 +69,10 @@
             <div class="items-center flex flex-wrap">
                 <div class="w-full lg:w-8/12 px-4 ml-auto mr-auto text-center">
                     <div class="pr-12">
-                        <h1 class="text-white font-bold text-5xl md:text-6xl">
+                        <h1 class="text-white font-bold text-5xl md:text-6xl drop-shadow-md">
                             Sistem Informasi Magang
                         </h1>
-                        <h2 class="mt-4 text-2xl text-blue-200 font-semibold">
+                        <h2 class="mt-4 text-2xl text-blue-200 font-semibold drop-shadow-sm">
                             PT. Indah Kiat Pulp & Paper - Perawang
                         </h2>
                         <p class="mt-4 text-lg text-gray-300">

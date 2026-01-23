@@ -1,7 +1,7 @@
 {{-- DEBUG BAR (Hanya muncul jika file ini berhasil dimuat) --}}
-<div style="background: red; color: white; text-align: center; padding: 5px; font-size: 12px; font-weight: bold;">
+{{-- <div style="background: red; color: white; text-align: center; padding: 5px; font-size: 12px; font-weight: bold;">
     STATUS: NAVIGATION LOADED | ROLE: {{ Auth::user()->role ?? 'GUEST' }}
-</div>
+</div> --}}
 
 <nav class="bg-white border-b border-gray-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -15,7 +15,9 @@
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     @if(Auth::check() && Auth::user()->role === 'admin')
+                        {{-- ======================= --}}
                         {{-- MENU ADMIN --}}
+                        {{-- ======================= --}}
                         <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
                             Dashboard Admin
                         </x-nav-link>
@@ -23,16 +25,26 @@
                             Monitoring
                         </x-nav-link>
                     @else
+                        {{-- ======================= --}}
                         {{-- MENU MAHASISWA --}}
+                        {{-- ======================= --}}
                         <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                             Dashboard
                         </x-nav-link>
+                        
                         <x-nav-link :href="route('logbook.index')" :active="request()->routeIs('logbook.*')">
                             Log Book
                         </x-nav-link>
+                        
                         <x-nav-link :href="route('presence.index')" :active="request()->routeIs('presence.*')">
                             Absensi
                         </x-nav-link>
+
+                        {{-- MENU BARU: LAPORAN MINGGUAN --}}
+                        <x-nav-link :href="route('laporan.index')" :active="request()->routeIs('laporan.*')">
+                            Laporan Mingguan
+                        </x-nav-link>
+
                     @endif
                 </div>
             </div>
@@ -87,6 +99,11 @@
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('presence.index')" :active="request()->routeIs('presence.*')">
                     Absensi
+                </x-responsive-nav-link>
+                
+                {{-- MENU BARU MOBILE --}}
+                <x-responsive-nav-link :href="route('laporan.index')" :active="request()->routeIs('laporan.*')">
+                    Laporan Mingguan
                 </x-responsive-nav-link>
             @endif
         </div>

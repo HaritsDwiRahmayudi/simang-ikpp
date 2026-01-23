@@ -10,15 +10,21 @@
             
             {{-- 1. KARTU SELAMAT DATANG --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
-                <div class="p-6 text-gray-900">
-                    Selamat datang, <strong>{{ Auth::user()->name }}</strong>!
+                <div class="p-6 text-gray-900 flex justify-between items-center">
+                    <div>
+                        Selamat datang, <strong>{{ Auth::user()->name }}</strong>!
+                        <p class="text-xs text-gray-500 mt-1">Pantau status magang dan laporan mingguan Anda di sini.</p>
+                    </div>
+                    <div class="text-sm text-gray-400">
+                        {{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}
+                    </div>
                 </div>
             </div>
 
             {{-- 2. LOGIKA UTAMA --}}
             @if(!$magang)
                 {{-- KASUS A: BELUM DAFTAR --}}
-                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 shadow-sm rounded-r">
                     <div class="flex">
                         <div class="flex-shrink-0">
                             <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
@@ -42,61 +48,96 @@
                 {{-- KASUS B: SUDAH DAFTAR --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     
-                    {{-- KARTU STATUS (KIRI) --}}
-                    <div class="bg-white p-6 rounded-lg shadow h-fit">
-                        <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Status Pendaftaran</h3>
-                        
-                        @if($magang->status == 'pending')
-                            <div class="bg-yellow-100 text-yellow-800 p-4 rounded-lg text-center">
-                                <span class="text-3xl">⏳</span>
-                                <h4 class="font-bold mt-2">MENUNGGU VERIFIKASI</h4>
-                                <p class="text-sm mt-1">Data Anda sedang diperiksa oleh Admin.</p>
-                            </div>
-
-                        @elseif($magang->status == 'approved')
-                            <div class="bg-green-100 text-green-800 p-4 rounded-lg text-center">
-                                <span class="text-3xl">✅</span>
-                                <h4 class="font-bold mt-2">RESMI DITERIMA</h4>
-                                <p class="text-sm mt-1">Selamat! Anda bisa mulai mengisi Logbook & Absensi.</p>
-                                <div class="mt-3 text-xs bg-white bg-opacity-50 p-2 rounded">
-                                    <strong>Penempatan:</strong> {{ $magang->penempatan ?? 'Belum ditentukan' }}
-                                </div>
-                            </div>
-
-                        @elseif($magang->status == 'rejected')
-                            <div class="bg-red-100 text-red-800 p-4 rounded-lg text-center">
-                                <span class="text-3xl">❌</span>
-                                <h4 class="font-bold mt-2">MAAF, DITOLAK</h4>
-                                <p class="text-sm mt-1">Silakan hubungi HRD untuk info lebih lanjut.</p>
-                            </div>
-                        @endif
-                    </div>
-
-                    {{-- KARTU DOWNLOAD (KANAN) - FITUR BARU --}}
-                    @if($magang->status == 'approved')
-                        <div class="bg-white p-6 rounded-lg shadow h-fit text-center">
-                            <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Laporan Akhir Magang</h3>
-                            <p class="text-gray-600 mb-6 text-sm">Download rangkuman seluruh kegiatan dan absensi Anda dalam format PDF.</p>
+                    {{-- ======================= --}}
+                    {{-- KOLOM KIRI: INFO STATUS --}}
+                    {{-- ======================= --}}
+                    <div class="space-y-6">
+                        <div class="bg-white p-6 rounded-lg shadow h-fit">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Status Pendaftaran</h3>
                             
-                            {{-- LOGIKA STATUS LAPORAN (INI YANG TADI ERROR) --}}
-                            @if($magang->status_laporan == 'approved')
-                                <div class="mb-6 bg-green-50 text-green-700 px-4 py-2 rounded border border-green-200 text-sm">
-                                    ✅ <strong>Laporan Disetujui!</strong><br>
-                                    PDF ini sah dan bertanda tangan digital.
+                            @if($magang->status == 'pending')
+                                <div class="bg-yellow-100 text-yellow-800 p-4 rounded-lg text-center border border-yellow-200">
+                                    <span class="text-3xl">⏳</span>
+                                    <h4 class="font-bold mt-2">MENUNGGU VERIFIKASI</h4>
+                                    <p class="text-sm mt-1">Data pendaftaran Anda sedang diperiksa oleh Admin.</p>
                                 </div>
-                            @else
-                                <div class="mb-6 bg-yellow-50 text-yellow-700 px-4 py-2 rounded border border-yellow-200 text-sm">
-                                    ⚠️ <strong>Status: Draft / Belum ACC</strong><br>
-                                    File PDF akan memiliki watermark "DRAFT".
+
+                            @elseif($magang->status == 'approved')
+                                <div class="bg-green-100 text-green-800 p-4 rounded-lg text-center border border-green-200">
+                                    <span class="text-3xl">✅</span>
+                                    <h4 class="font-bold mt-2">RESMI DITERIMA</h4>
+                                    <p class="text-sm mt-1">Selamat! Anda bisa mulai mengisi Logbook & Absensi.</p>
+                                </div>
+                                
+                                <div class="mt-4 text-sm text-gray-600 space-y-2 border-t pt-4">
+                                    <p><strong class="block text-gray-800">Universitas:</strong> {{ $magang->universitas }}</p>
+                                    <p><strong class="block text-gray-800">Jurusan:</strong> {{ $magang->jurusan }}</p>
+                                    <p><strong class="block text-gray-800">Periode Magang:</strong> 
+                                       {{ \Carbon\Carbon::parse($magang->tanggal_mulai)->format('d M Y') }} s/d 
+                                       {{ \Carbon\Carbon::parse($magang->tanggal_selesai)->format('d M Y') }}
+                                    </p>
+                                </div>
+
+                            @elseif($magang->status == 'rejected')
+                                <div class="bg-red-100 text-red-800 p-4 rounded-lg text-center border border-red-200">
+                                    <span class="text-3xl">❌</span>
+                                    <h4 class="font-bold mt-2">MAAF, DITOLAK</h4>
+                                    <p class="text-sm mt-1">Silakan hubungi admin untuk info lebih lanjut.</p>
                                 </div>
                             @endif
-                            {{-- END LOGIKA --}}
+                        </div>
+                    </div>
 
-                            <a href="{{ route('laporan.cetak') }}" target="_blank" class="block w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-lg shadow transition transform hover:-translate-y-1">
-                                📄 Download PDF Laporan
+                    {{-- ========================================== --}}
+                    {{-- KOLOM KANAN: FITUR UTAMA (Jika Approved)   --}}
+                    {{-- ========================================== --}}
+                    @if($magang->status == 'approved')
+                    <div class="space-y-6">
+
+                        {{-- CARD 1: SHORTCUT LAPORAN MINGGUAN (PENTING) --}}
+                        <div class="bg-white p-6 rounded-lg shadow h-fit border-l-4 border-purple-600">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-lg font-bold text-gray-800">📂 Laporan Mingguan</h3>
+                                <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full font-bold">Wajib</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-4">
+                                Upload laporan kegiatan (PDF) setiap minggu agar absensi tervalidasi.
+                            </p>
+                            
+                            <a href="{{ route('laporan.index') }}" class="block w-full text-center bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded transition shadow-md">
+                                Upload / Cek Status Minggu Ini &rarr;
                             </a>
                         </div>
+
+                        {{-- CARD 2: CETAK JURNAL MINGGUAN --}}
+                        <div class="bg-white p-6 rounded-lg shadow h-fit border-l-4 border-blue-500">
+                            <h3 class="text-lg font-bold text-gray-800 mb-2">🖨️ Cetak Jurnal (Rekap)</h3>
+                            <p class="text-xs text-gray-500 mb-4">Download PDF logbook & absensi berdasarkan tanggal.</p>
+
+                            <form action="{{ route('laporan.cetak') }}" method="GET" target="_blank">
+                                <div class="grid grid-cols-2 gap-3 mb-4">
+                                    <div>
+                                        <label class="text-xs font-bold text-gray-600 block mb-1">Dari</label>
+                                        <input type="date" name="start_date" required 
+                                            class="w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs font-bold text-gray-600 block mb-1">Sampai</label>
+                                        <input type="date" name="end_date" required 
+                                            class="w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition flex justify-center items-center text-sm">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                                    Download PDF
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
                     @endif
+                    {{-- END KOLOM KANAN --}}
 
                 </div>
             @endif
