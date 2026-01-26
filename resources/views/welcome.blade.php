@@ -18,21 +18,23 @@
                 
                 {{-- BAGIAN LOGO --}}
                 <div class="flex-shrink-0 flex items-center">
-                    
-                    {{-- 1. LOGO IKPP (KIRI) --}}
-                    {{-- 'mr-6' = Jarak pemisah antara grup IKPP dengan grup Simang --}}
+                    {{-- Logo IKPP --}}
                     <img src="{{ asset('images/logo ikpp.png') }}" alt="Logo IKPP" class="h-10 w-auto mr-6">
-
-                    {{-- 2. LOGO SIMANG (TENGAH) --}}
-                    {{-- '-mr-2' = Margin Negatif. Ini akan menarik teks masuk ke kiri mendekati logo --}}
-                    {{-- Gunakan ini jika file gambar memiliki area kosong di pinggirnya --}}
+                    {{-- Logo Simang --}}
                     <img src="{{ asset('images/logo simang.png') }}" alt="Logo Simang" class="h-10 w-auto -mr-2">
-                    
-                    {{-- 3. TEKS JUDUL (KANAN) --}}
+                    {{-- Teks Judul --}}
                     <span class="font-bold text-xl tracking-tight text-blue-900">SIMANG IKPP</span>
                 </div>
 
                 <div class="hidden sm:ml-6 sm:flex sm:items-center space-x-4">
+                    
+                    {{-- ======================================= --}}
+                    {{-- 1. MENU TENTANG KAMI (BARU DITAMBAHKAN) --}}
+                    {{-- ======================================= --}}
+                    <a href="{{ route('about') }}" class="text-gray-700 hover:text-blue-900 px-3 py-2 rounded-md text-sm font-bold transition border-b-2 border-transparent hover:border-blue-900">
+                        Tentang Kami
+                    </a>
+
                     @if (Route::has('login'))
                         @auth
                             @if(Auth::user()->role == 'admin')

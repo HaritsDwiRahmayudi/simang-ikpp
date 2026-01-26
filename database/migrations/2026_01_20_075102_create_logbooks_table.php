@@ -10,14 +10,18 @@ return new class extends Migration
     {
         Schema::create('logbooks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Relasi ke Mahasiswa
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             
             $table->date('tanggal');
-            $table->string('nama_koordinator'); // Nama Pembimbing
-            $table->string('lokasi');           // Lokasi (Unit Kerja)
-            $table->text('kegiatan');           // Isi Jurnal
-            $table->longText('ttd_koordinator'); // Tanda Tangan Digital (Base64)
-            $table->string('foto_kegiatan')->nullable(); // Upload Bukti Foto (Path File)
+            $table->string('nama_koordinator');
+            $table->string('lokasi');
+            $table->text('kegiatan');
+            
+            // --- PERBAIKAN DISINI ---
+            // Tambahkan ->nullable() agar kolom ini tidak wajib diisi
+            $table->longText('ttd_koordinator')->nullable(); 
+            
+            $table->string('foto_kegiatan')->nullable();
             
             $table->timestamps();
         });

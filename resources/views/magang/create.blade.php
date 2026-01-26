@@ -1,98 +1,79 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Formulir Pendaftaran Magang') }}
+        <h2 class="font-bold text-2xl text-blue-900 leading-tight">
+            {{ __('Pendaftaran Magang') }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
-                    
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Lengkapi Data Diri & Akademik</h3>
-                    
-                   <form method="POST" action="{{ route('magang.store') }}" enctype="multipart/form-data">
-    @csrf
+    <div class="py-12 bg-gray-50 min-h-screen">
+        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-2xl rounded-2xl border border-gray-200">
+                
+                {{-- HEADER FORM --}}
+                <div class="bg-blue-900 px-8 py-6">
+                    <h3 class="text-white font-bold text-xl">Formulir Peserta Baru</h3>
+                    <p class="text-blue-200 text-sm mt-1">Lengkapi data di bawah ini untuk memulai perjalanan magang Anda.</p>
+                </div>
 
-    <div class="space-y-6">
-        
-        {{-- NAMA LENGKAP (Read Only) --}}
-        <div>
-            <label class="block font-medium text-sm text-gray-700">Nama Lengkap</label>
-            <input type="text" value="{{ Auth::user()->name }}" disabled 
-                class="mt-1 block w-full bg-gray-100 border-gray-300 rounded-md shadow-sm">
-            <p class="text-xs text-gray-500 mt-1">*Sesuai nama akun.</p>
-        </div>
+                <div class="p-8">
+                    <form action="{{ route('magang.store') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
+                        @csrf
 
-        {{-- GRID 2 KOLOM --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {{-- NIM --}}
-            <div>
-                <label for="nim" class="block font-medium text-sm text-gray-700">NIM / NPM</label>
-                <input type="text" name="nim" id="nim" required placeholder="Contoh: 19010023"
-                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-            </div>
+                        {{-- SECTION 1: DATA AKADEMIK --}}
+                        <div>
+                            <h4 class="text-gray-700 font-bold uppercase text-sm border-b pb-2 mb-4 tracking-wider">Data Akademik</h4>
+                            <div class="grid grid-cols-1 gap-6">
+                                <div>
+                                    <label class="block font-semibold text-gray-700 mb-2">NIM / NISN</label>
+                                    <input type="text" name="nim" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm py-3" required placeholder="Contoh: 12345678">
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block font-semibold text-gray-700 mb-2">Asal Universitas / Sekolah</label>
+                                        <input type="text" name="universitas" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm py-3" required placeholder="Nama Kampus/Sekolah">
+                                    </div>
+                                    <div>
+                                        <label class="block font-semibold text-gray-700 mb-2">Jurusan</label>
+                                        <input type="text" name="jurusan" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm py-3" required placeholder="Contoh: Teknik Informatika">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-            {{-- JURUSAN --}}
-            <div>
-                <label for="jurusan" class="block font-medium text-sm text-gray-700">Jurusan / Prodi</label>
-                <input type="text" name="jurusan" id="jurusan" required placeholder="Contoh: Teknik Informatika"
-                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-            </div>
-        </div>
+                        {{-- SECTION 2: PERIODE MAGANG --}}
+                        <div>
+                            <h4 class="text-gray-700 font-bold uppercase text-sm border-b pb-2 mb-4 tracking-wider">Periode Pelaksanaan</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                                <div>
+                                    <label class="block font-semibold text-gray-700 mb-2">Tanggal Mulai</label>
+                                    <input type="date" name="tanggal_mulai" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm py-3" required>
+                                </div>
+                                <div>
+                                    <label class="block font-semibold text-gray-700 mb-2">Tanggal Selesai</label>
+                                    <input type="date" name="tanggal_selesai" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm py-3" required>
+                                </div>
+                            </div>
+                        </div>
 
-        {{-- UNIVERSITAS --}}
-        <div>
-            <label for="universitas" class="block font-medium text-sm text-gray-700">Asal Universitas / Sekolah</label>
-            <input type="text" name="universitas" id="universitas" required placeholder="Contoh: Universitas Riau"
-                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-        </div>
+                        {{-- SECTION 3: DOKUMEN --}}
+                        <div>
+                            <h4 class="text-gray-700 font-bold uppercase text-sm border-b pb-2 mb-4 tracking-wider">Dokumen Pendukung</h4>
+                            <div class="bg-blue-50 p-6 rounded-xl border-2 border-dashed border-blue-200 text-center hover:bg-blue-100 transition duration-300">
+                                <svg class="w-12 h-12 mx-auto text-blue-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                <label class="block font-bold text-gray-700 mb-2 cursor-pointer">
+                                    <span class="text-blue-600 underline">Upload Surat Balasan</span> / Pengantar (PDF)
+                                </label>
+                                <input type="file" name="surat_balasan" accept=".pdf" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition cursor-pointer" required>
+                                <p class="text-xs text-gray-500 mt-3">*Format PDF, Maksimal ukuran file 2MB.</p>
+                            </div>
+                        </div>
 
-        {{-- TANGGAL MAGANG --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label for="tanggal_mulai" class="block font-medium text-sm text-gray-700">Rencana Tanggal Mulai</label>
-                <input type="date" name="tanggal_mulai" id="tanggal_mulai" required
-                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-            </div>
-            <div>
-                <label for="tanggal_selesai" class="block font-medium text-sm text-gray-700">Rencana Tanggal Selesai</label>
-                <input type="date" name="tanggal_selesai" id="tanggal_selesai" required
-                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-            </div>
-        </div>
-
-        {{-- UPLOAD SURAT BALASAN (BARU) --}}
-        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
-            <label for="surat_balasan" class="block font-bold text-sm text-gray-800 mb-2">
-                Upload Surat Balasan/Penerimaan dari PT Indah Kiat
-            </label>
-            <input type="file" name="surat_balasan" id="surat_balasan" accept=".pdf" required
-                class="block w-full text-sm text-gray-500
-                file:mr-4 file:py-2 file:px-4
-                file:rounded-full file:border-0
-                file:text-sm file:font-semibold
-                file:bg-blue-600 file:text-white
-                file:hover:bg-blue-700">
-            <p class="text-xs text-gray-600 mt-2">
-                *Wajib format <strong>PDF</strong>. Maksimal ukuran 2MB.<br>
-                *Ini adalah bukti sah bahwa Anda telah diterima magang.
-            </p>
-            @error('surat_balasan')
-                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-            @enderror
-        </div>
-
-        {{-- TOMBOL KIRIM --}}
-        <div class="flex justify-end pt-4">
-            <button type="submit" class="bg-blue-900 hover:bg-blue-800 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition transform hover:-translate-y-1">
-                Kirim Pendaftaran
-            </button>
-        </div>
-
-    </div>
-</form>
+                        <div class="pt-6 border-t border-gray-100">
+                            <button type="submit" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-1 text-lg">
+                                🚀 Kirim Pendaftaran
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
