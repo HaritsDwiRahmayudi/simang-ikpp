@@ -9,9 +9,9 @@ class Magang extends Model
 {
     use HasFactory;
 
-    protected $table = 'magangs'; // Pastikan nama tabel benar
+    protected $table = 'magangs';
 
-    // Tambahkan 'status_laporan' agar bisa di-update
+    // KITA BALIKAN KE FILLABLE (SAFETY FIRST)
     protected $fillable = [
         'user_id',
         'nim',
@@ -19,13 +19,19 @@ class Magang extends Model
         'jurusan',
         'tanggal_mulai',
         'tanggal_selesai',
-        'status',           // Status pendaftaran (pending/approved/rejected)
-        'status_laporan',   // Status laporan akhir (diterima/ditolak)
-        'surat_balasan',    // Surat balasan dari instansi
+        'status',          
+        'status_laporan',  
+        'surat_balasan',   
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    // WAJIB ADA INI BIAR ADMIN GAK ERROR 500
+    public function laporanMingguans()
+    {
+        return $this->hasMany(LaporanMingguan::class, 'magang_id');
     }
 }
